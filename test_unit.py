@@ -23,7 +23,7 @@ def rules():
         rules()
 
 rules()
-time.sleep(10)
+time.sleep(3)
 
 def name():
     name_user = str(input("Je suis Python. Quel est votre pseudo ? \n"))
@@ -38,7 +38,7 @@ def name():
         print ('Hello', name_user, ', vous avez ', solde,'€, Très bien ! Installez vous SVP à la table de pari. Je vous expliquerai le principe du jeu :')
     return name_user, solde
 name()
-time.sleep(10)
+time.sleep(3)
 
 def levelRules(level=2):
     if level == 1:
@@ -74,7 +74,7 @@ Att : vous avez le droit à sept essais ! :
     return level
 
 levelRules()
-time.sleep(10)
+time.sleep(3)
 
 def balance(nb_coup=2, solde=10, mise=2, name_user="Robin", level=3, player_1=1):
     print("vous avez gagner")
@@ -103,7 +103,7 @@ def balance(nb_coup=2, solde=10, mise=2, name_user="Robin", level=3, player_1=1)
     return solde
 
 balance()
-time.sleep(10)
+time.sleep(3)
 
 def bet(range_number=20, solde=15):
     while True:
@@ -118,7 +118,7 @@ def bet(range_number=20, solde=15):
             else:
                 print("Votre mise est trop fort ! Entrer SVP un montant entre 1 et ", range_number)
 bet()
-time.sleep(10)
+time.sleep(3)
 
 
 def nbPython(range_number=30):
@@ -128,7 +128,7 @@ def nbPython(range_number=30):
     return nb_python
 
 nbPython()
-time.sleep(10)
+time.sleep(3)
 
 def nbUser(range_number=10, nb_coup=2, nb_essaie=3, solde=10, mise=4, level=1, nb_python=6):
     while True:
@@ -140,7 +140,7 @@ def nbUser(range_number=10, nb_coup=2, nb_essaie=3, solde=10, mise=4, level=1, n
             print("Vous avez dépassé le délai de 10 secondes ! Vous perdez l'essai courant et il vous reste ", nb_essaie," essai(s) !")
             if nb_coup == 3:
                 solde = solde - mise
-                gameOver(solde, mise, level, nb_coup, nb_essaie, range_number, nb_python, "Alex")
+                print("vous avez perdu")
                 break
         else:
             if nb_user <= range_number:
@@ -149,7 +149,7 @@ def nbUser(range_number=10, nb_coup=2, nb_essaie=3, solde=10, mise=4, level=1, n
             else:
                 print("/!\ Nombre Invalide /!\ Entrer SVP un nombre entre 1 et", range_number, ":\n")
 nbUser()
-time.sleep(10)
+time.sleep(3)
 
 def moreLess(nb_python=5, nb_user=2):
     if nb_user < nb_python:
@@ -158,7 +158,7 @@ def moreLess(nb_python=5, nb_user=2):
         print("Votre nbre est trop grand !\n")
 
 moreLess()
-time.sleep(10)
+time.sleep(3)
 
 def moreLess(nb_python=5, nb_user=10):
     if nb_user < nb_python:
@@ -166,9 +166,25 @@ def moreLess(nb_python=5, nb_user=10):
     elif nb_user > nb_python:
         print("Votre nbre est trop grand !\n")
 moreLess()
-time.sleep(10)
+time.sleep(3)
 
-def gameOver(solde=10, mise=6, level=1, nb_coup=2, nb_essaie=3, range_number=10, nb_python=4, name_user='Alex'):
+def win(level=1, range_number=10, nb_coup=3, nb_essaie=3, mise=5, nb_python=9, solde=10, name_user="Robin"):
+    print("Bingo", name_user, " vous avez gagné en ", nb_coup," coup(s) et vous avez emporté ", solde,"€ !")
+    level += 1
+    range_number = 10*level
+    print("Range :", range_number)
+    nb_coup = 0
+    nb_essaie += 2
+    print("Vous accédez donc au niveau supérieur : Niveau ", level) 
+    levelRules(level)  
+    mise = bet(range_number, solde)
+    nb_python = nbPython(range_number)
+    return level, range_number, nb_python, mise, nb_essaie
+
+win()
+time.sleep(3)
+
+def gameOver(solde=10, mise=5, level=1, nb_coup=2, nb_essaie=3, range_number=10, nb_python=6, name_user="Robin"):
     solde = solde - mise
     print("Vous avez perdu ! Mon nombre est ", nb_python," !")
     if level == 1:
@@ -187,12 +203,36 @@ def gameOver(solde=10, mise=6, level=1, nb_coup=2, nb_essaie=3, range_number=10,
     if choix == 1:
         nb_coup = 0
         print("vous recommncez avec un solde de : ", solde, "€")
-        #game(solde, nb_coup, nb_essaie, '', '', 1)
+        print("vous recommncez au level precédent")
     elif choix == 2:
         my_sql.insert('player', username=name_user, level=level)
         print("Vous repartez avec la somme de :", solde, "€")
-        #show_global_stats(my_sql, name_user)
         sys.exit()
     else:
         print("Veuillez choisir entre le choix 1 et le choix 2 ?")
 gameOver()
+time.sleep(3)
+
+def game(solde=15, nb_coup=2, nb_essaie=3, name_user="Robin", player_1=1):
+    level = 1
+    range_number = 10*level
+    nb_python = 6   
+
+    while nb_coup < nb_essaie:
+        nb_user = 6
+        if nb_user <= range_number and nb_user >= 1:
+            if nb_user == nb_python:
+                solde = solde
+                if level == 3:
+                    print("Félicitation vous venez de remporter le gros lot")
+                    sys.exit()
+                else:
+                    level += 1
+                    print("vous avez gagnez")
+                    print("Vous accédez donc au niveau supérieur : Niveau ", level) 
+                
+            elif nb_user != nb_python:
+                print("Ce n'est pas le bon numéro. Retente ta chance")     
+    else :
+         print("vous avez perdu")
+game()
